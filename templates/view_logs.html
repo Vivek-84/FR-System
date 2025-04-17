@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #export-button, #clear-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        #export-button {
+            background-color: #007bff;
+        }
+        #clear-button {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <h1>Face Recognition Logs</h1>
+
+    <a id="export-button" href="/export_logs">Export to Excel</a>
+    <button id="clear-button">Clear Logs</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log[1] }}</td>
+                <td>{{ log[2] }}</td>
+                <td>{{ log[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById('clear-button').addEventListener('click', function() {
+            if (confirm('Are you sure you want to clear all logs?')) {
+                fetch('/clear_logs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Logs cleared successfully.');
+                        location.reload(); // Reload the page to update the log view
+                    } else {
+                        alert('Failed to clear logs.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
